@@ -2,6 +2,7 @@ package com.example.eadca2app;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -31,14 +32,27 @@ public class MainActivity extends AppCompatActivity {
     Button button1, button2;
     EditText dataInput;
     ListView bookList;
+    private Button button3;
 
     final WeatherDataService weatherDataService = new WeatherDataService(MainActivity.this);
+
+    public void openActivity2() {
+        Intent intent = new Intent(this, Activity2.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        button3 = (Button) findViewById(R.id.button3);
+        button3.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                openActivity2();
+            }
+        });
 
         button1 = findViewById(R.id.button1);
         dataInput = findViewById(R.id.userInput);
@@ -62,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
                             for(int i = 0 ; i < 10 ; i++ ){
                                 bookInfo = response.getJSONObject(i);
                                 cityID = "";
-                                cityID = bookInfo.getString("bookName") + " " + bookInfo.getString("author") + " " + bookInfo.getString("availableForLoan");
+                                cityID = bookInfo.getString("bookName") + " " + bookInfo.getString("author") + " " + bookInfo.getString("id");
                                 listOfBooks.add(cityID);
                             }
                         } catch (JSONException e) {
@@ -79,33 +93,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 queue.add(request);
-
-              /* StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                Toast.makeText(MainActivity.this, response, Toast.LENGTH_SHORT).show();
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                queue.add(stringRequest);*/
-
-                /*weatherDataService.getCityID(dataInput.getText().toString(), new WeatherDataService.VolleyResponseListener() {
-                    @Override
-                    public void onError(String message) {
-                        Toast.makeText(MainActivity.this, "Something Wrong" , Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onResponse(String cityID) {
-                        Toast.makeText(MainActivity.this, "Returned an ID of " + cityID, Toast.LENGTH_SHORT).show();
-                    }
-                });*/
             }
         });
 
@@ -150,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
                 queue.add(request);
             }
         });
+
+
 
     }
 }
