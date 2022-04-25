@@ -3,6 +3,7 @@ package com.example.eadca2app;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -26,13 +27,15 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    Button button1, button2;
+    Button button1, button2, languageButton;
     EditText dataInput;
     ListView bookList;
     private Button button3;
+    String Language;
 
     final WeatherDataService weatherDataService = new WeatherDataService(MainActivity.this);
 
@@ -57,6 +60,39 @@ public class MainActivity extends AppCompatActivity {
         button1 = findViewById(R.id.button1);
         dataInput = findViewById(R.id.userInput);
         bookList = findViewById(R.id.bookList);
+        languageButton =  findViewById(R.id.languageButton);
+        Language = Locale.getDefault().getLanguage().toLowerCase(Locale.ROOT);
+
+        languageButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                if(Language.equals("en")) {
+                    Language = "es";
+                    Locale locale = new Locale(Language);
+                    Locale.setDefault(locale);
+                    Configuration config = new Configuration();
+                    config.locale = locale;
+                    getBaseContext().getResources().updateConfiguration(config,
+                            getBaseContext().getResources().getDisplayMetrics());
+                    recreate();
+                    return;
+                }
+                if(Language.equals("es")) {
+                    Language = "en";
+                    Locale locale = new Locale(Language);
+                    Locale.setDefault(locale);
+                    Configuration config = new Configuration();
+                    config.locale = locale;
+                    getBaseContext().getResources().updateConfiguration(config,
+                            getBaseContext().getResources().getDisplayMetrics());
+                    recreate();
+                    return;
+                }
+            }
+        });
+
+
+
 
         button1.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -76,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                             for(int i = 0 ; i < 10 ; i++ ){
                                 bookInfo = response.getJSONObject(i);
                                 cityID = "";
-                                cityID = bookInfo.getString("bookName") + " " + bookInfo.getString("author") + " " + bookInfo.getString("id");
+                                cityID = bookInfo.getString("id") + " " + bookInfo.getString("bookName") + " " + bookInfo.getString("author") ;
                                 listOfBooks.add(cityID);
                             }
                         } catch (JSONException e) {
